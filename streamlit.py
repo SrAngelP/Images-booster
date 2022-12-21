@@ -1,4 +1,3 @@
-pip install opencv-python
 
 import streamlit as st
 import cv2
@@ -137,43 +136,55 @@ if uploaded_file is not None:
                 converted_img = cv2.cvtColor(converted_img, cv2.COLOR_RGB2BGR)
                 gray = cv2.cvtColor(converted_img, cv2.COLOR_BGR2GRAY)
                 faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-                x, y, w, h = faces[0]
-                cv2.rectangle(converted_img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                roi_gray = gray[y:y+h, x:x+w]
-                roi_color = converted_img[y:y+h, x:x+w]
-                eyes = eye_cascade.detectMultiScale(roi_gray)
-                for (ex,ey,ew,eh) in eyes:
-                    cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
-                converted_img[y:y+h, x:x+w] = roi_color
-                st.image(converted_img, channels='BGR', width=300)
-                converted_img = array_to_img(converted_img)
-                st.markdown(get_image_download_link(converted_img), unsafe_allow_html=True)
+                if len(faces)>0:
+                    x, y, w, h = faces[0]
+                    cv2.rectangle(converted_img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                    roi_gray = gray[y:y+h, x:x+w]
+                    roi_color = converted_img[y:y+h, x:x+w]
+                    eyes = eye_cascade.detectMultiScale(roi_gray)
+                    for (ex,ey,ew,eh) in eyes:
+                        cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+                    converted_img[y:y+h, x:x+w] = roi_color
+                    st.image(converted_img, channels='BGR', width=300)
+                    converted_img = array_to_img(converted_img)
+                    st.markdown(get_image_download_link(converted_img), unsafe_allow_html=True)
+                elif len(faces)==0:
+                    st.image(image, width=300)
+                    st.write('No face detected')
             elif filter == 'Censor face':
                 converted_img = np.array(image.convert('RGB'))
                 gray = cv2.cvtColor(converted_img, cv2.COLOR_RGB2GRAY)
                 faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-                x, y, w, h = faces[0]
-                p = 10
-                roi = converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w]
-                slider = st.sidebar.slider('Adjust the blur', 3, 31, 15, step=2)
-                blur_roi = cv2.medianBlur(roi, slider)
-                converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w] = blur_roi
-                st.image(converted_img, channels='RGB', width=300)
-                converted_img = array_to_img(converted_img)
-                st.markdown(get_image_download_link(converted_img), unsafe_allow_html=True)
+                if len(faces)>0:
+                    x, y, w, h = faces[0]
+                    p = int((0-x)*0.1 + (0-y)*0.10)
+                    roi = converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w]
+                    slider = st.sidebar.slider('Adjust the blur', 3, 31, 15, step=2)
+                    blur_roi = cv2.medianBlur(roi, slider)
+                    converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w] = blur_roi
+                    st.image(converted_img, channels='RGB', width=300)
+                    converted_img = array_to_img(converted_img)
+                    st.markdown(get_image_download_link(converted_img), unsafe_allow_html=True)
+                elif len(faces)==0:
+                    st.image(image, width=300)
+                    st.write('No face detected')
             elif filter == 'Censor no-face':
                 converted_img = np.array(image.convert('RGB'))
                 gray = cv2.cvtColor(converted_img, cv2.COLOR_RGB2GRAY)
                 faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-                x, y, w, h = faces[0]
-                p = 20
-                roi = converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w]
-                slider = st.sidebar.slider('Adjust the blur', 3, 31, 15, step=2)
-                converted_img = cv2.medianBlur(converted_img, slider)
-                converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w] = roi
-                st.image(converted_img, channels='RGB', width=300)
-                converted_img = array_to_img(converted_img)
-                st.markdown(get_image_download_link(converted_img), unsafe_allow_html=True)
+                if len(faces)>0:
+                    x, y, w, h = faces[0]
+                    p = 0
+                    roi = converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w]
+                    slider = st.sidebar.slider('Adjust the blur', 3, 31, 15, step=2)
+                    converted_img = cv2.medianBlur(converted_img, slider)
+                    converted_img[(y - p):(y + p)+h, (x - p):(x + p)+w] = roi
+                    st.image(converted_img, channels='RGB', width=300)
+                    converted_img = array_to_img(converted_img)
+                    st.markdown(get_image_download_link(converted_img), unsafe_allow_html=True)
+                elif len(faces)==0:
+                    st.image(image, width=300)
+                    st.write('No face detected')
 #            elif filter == 'Little hat':
 #                converted_img = np.array(image.convert('RGB'))
 #                converted_img = cv2.cvtColor(converted_img, cv2.COLOR_RGB2BGR)
