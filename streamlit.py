@@ -1,3 +1,4 @@
+pip3 install opencv-python
 
 import streamlit as st
 import cv2
