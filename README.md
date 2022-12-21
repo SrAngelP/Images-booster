@@ -7,6 +7,7 @@
 - The files *.h5* are the CycleGAN trained models for the anime filter in the app.
 - The files *.xml* are the trained haar cascaded models used in the face detection in the app.
 - *requirements.txt* and *streamlit.py* are the files for the **Streamlit** app.
+- For the model implementation and training check [training](training.ipynb)
 
 # Credits
 
@@ -14,6 +15,4 @@
 
 For the *anime_model.h5* trained model and more: [Selfie-to-Anime](https://github.com/deepbodra97/Selfie-to-Anime)
 
-# Links
 
-For the train process of the models, and other tests on image processing, check: [Tests](https://github.com/SrAngelP/Final-project-tests)
