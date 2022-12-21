@@ -1,3 +1,4 @@
 opencv-python-headless
 tensorflow
 tensorflow_addons
+streamlit_option_menu
